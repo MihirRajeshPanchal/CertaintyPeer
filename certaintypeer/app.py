@@ -1,4 +1,4 @@
-from certaintypeer.endpoints import hybrid_search
+from certaintypeer.endpoints import graph, hybrid_search
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -13,7 +13,7 @@ app.add_middleware(
 )
 
 app.include_router(hybrid_search.router)
-
+app.include_router(graph.router)
 
 @app.get("/")
 def root():
