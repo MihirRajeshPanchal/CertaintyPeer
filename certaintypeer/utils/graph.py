@@ -1,11 +1,16 @@
 from certaintypeer.models.graph import MetaReviewRequest
-from certaintypeer.constants.graph import META_REVIEW_NODE, REVIEW_NODE, RATING_NODE, CONFIDENCE_NODE
+from certaintypeer.constants.graph import META_REVIEW_NODE, REVIEW_NODE, RATING_NODE, CONFIDENCE_NODE, RATING_SCORE_NODE, CONFIDENCE_SCORE_NODE
 from certaintypeer.constants.certaintypeer import driver
 import re
 
 def clean_text(text: str) -> str:
     """Remove all special characters from the text."""
     return re.sub(r'[^A-Za-z0-9 ]', '', text)
+
+def extract_first_number(text: str) -> int:
+    """Extract the first numeric value from the given text."""
+    match = re.search(r'\d+', text)
+    return int(match.group()) if match else None
 
 def add_meta_review_and_reviews(meta_review_request: MetaReviewRequest):
     with driver.session() as session:
@@ -16,13 +21,26 @@ def add_meta_review_and_reviews(meta_review_request: MetaReviewRequest):
         """
         
         for review_data in meta_review_request.reviews:
+            
+            cleaned_review = clean_text(review_data.review)
+            cleaned_rating = clean_text(review_data.rating)
+            cleaned_confidence = clean_text(review_data.confidence)
+
+            rating_score = extract_first_number(review_data.rating)
+            confidence_score = extract_first_number(review_data.confidence)
+
+            
             review_query = meta_review_query + f"""
-            CREATE (review: {REVIEW_NODE} {{review: '{clean_text(review_data.review)}'}})
-            CREATE (rating: {RATING_NODE} {{rating: '{clean_text(review_data.rating)}'}})
-            CREATE (confidence: {CONFIDENCE_NODE} {{confidence: '{clean_text(review_data.confidence)}'}})
+            CREATE (review: {REVIEW_NODE} {{review: '{cleaned_review}'}})
+            CREATE (rating: {RATING_NODE} {{rating: '{cleaned_rating}'}})
+            CREATE (confidence: {CONFIDENCE_NODE} {{confidence: '{cleaned_confidence}'}})
+            MERGE (rating_score: {RATING_SCORE_NODE} {{value: {rating_score}}})
+            MERGE (confidence_score: {CONFIDENCE_SCORE_NODE} {{value: {confidence_score}}})
             CREATE (meta)-[:CONTAINS]->(review)
             CREATE (review)-[:HAS_RATING]->(rating)
             CREATE (review)-[:HAS_CONFIDENCE]->(confidence)
+            MERGE (rating)-[:HAS_RATING_SCORE]->(rating_score)  
+            MERGE (confidence)-[:HAS_CONFIDENCE_SCORE]->(confidence_score) 
             """
             session.run(review_query)
 
