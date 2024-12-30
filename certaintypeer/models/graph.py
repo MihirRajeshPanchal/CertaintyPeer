@@ -7,8 +7,7 @@ class Review(BaseModel):
     confidence: str 
 
 class MetaReview(BaseModel):
-    id: str  
-    metaReview: str  
+    id: str
     reviews: List[Review]  
 
 class Rating(BaseModel):
@@ -21,7 +20,7 @@ class Confidence(BaseModel):
 
 class MetaReviewRequest(BaseModel):
     id: str  
-    metaReview: str  
+    metaReview: Optional[str]
     reviews: List[Review]  
 
 class ReviewRequest(BaseModel):

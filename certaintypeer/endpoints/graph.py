@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException
 from certaintypeer.models.graph import MetaReviewRequest
-from certaintypeer.utils.graph import add_meta_review_and_reviews
+from certaintypeer.utils.graph import add_reviews
 import os
 import json
 
@@ -10,7 +10,7 @@ router = APIRouter()
 @router.post("/create_graph")
 def add_meta_review(request: MetaReviewRequest):
     try:
-        result = add_meta_review_and_reviews(request)
+        result = add_reviews(request)
         return {"status": "success", "data": result}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
@@ -38,7 +38,7 @@ def process_dataset_files():
                     data = json.load(file)
                 
                 request = MetaReviewRequest(**data)
-                result = add_meta_review_and_reviews(request)
+                result = add_reviews(request)
                 
                 print(f"File {file_name} processed successfully.")
                 success_rate += 1
