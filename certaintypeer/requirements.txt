@@ -5,3 +5,5 @@ requests
 python-dotenv
 langchain_community
 jq
+certainty-estimator
+transformers

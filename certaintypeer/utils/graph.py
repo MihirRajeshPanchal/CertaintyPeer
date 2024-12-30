@@ -1,6 +1,7 @@
 from certaintypeer.models.graph import MetaReview
 from certaintypeer.constants.graph import REVIEW_NODE, RATING_NODE, CONFIDENCE_NODE, RATING_SCORE_NODE, CONFIDENCE_SCORE_NODE
-from certaintypeer.constants.certaintypeer import driver
+from certaintypeer.constants.certaintypeer import driver, estimator
+
 import re
 
 def clean_text(text: str) -> str:
@@ -13,6 +14,8 @@ def extract_first_number(text: str) -> int:
     return int(match.group()) if match else None
 
 def add_reviews(meta_review_request: MetaReview):
+    
+
     with driver.session() as session:
         for review_data in meta_review_request.reviews:
 
@@ -23,8 +26,10 @@ def add_reviews(meta_review_request: MetaReview):
             rating_score = extract_first_number(review_data.rating)
             confidence_score = extract_first_number(review_data.confidence)
 
+            certainty_score = estimator.predict(cleaned_review)[0]
+
             review_query = f"""
-            CREATE (review: {REVIEW_NODE} {{review: '{cleaned_review}'}})
+            CREATE (review: {REVIEW_NODE} {{review: '{cleaned_review}', certainty: {certainty_score}}})
             CREATE (rating: {RATING_NODE} {{rating: '{cleaned_rating}'}})
             CREATE (confidence: {CONFIDENCE_NODE} {{confidence: '{cleaned_confidence}'}})
             MERGE (rating_score: {RATING_SCORE_NODE} {{value: {rating_score}}})
