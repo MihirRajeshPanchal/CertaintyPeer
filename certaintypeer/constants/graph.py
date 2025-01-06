@@ -1,4 +1,5 @@
 META_REVIEW_NODE = "MetaReview"
+ASPECT_NODE = "Aspect"
 REVIEW_NODE = "Review"
 RATING_NODE = "Rating"
 CONFIDENCE_NODE = "Confidence"

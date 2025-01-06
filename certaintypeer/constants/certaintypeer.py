@@ -4,6 +4,8 @@ from langchain.text_splitter import CharacterTextSplitter
 from certainty_estimator.predict_certainty import CertaintyEstimator
 from dotenv import load_dotenv
 from neo4j import GraphDatabase
+from simpletransformers.ner import NERModel
+from transformers import AutoTokenizer, AutoModelForSequenceClassification
 import os
 
 load_dotenv()
@@ -18,4 +20,13 @@ graph = Neo4jGraph(url=NEO4J_URI, username=NEO4J_USERNAME, password=NEO4J_PASSWO
 text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
 embeddings = OpenAIEmbeddings()
 estimator = CertaintyEstimator('sentence-level')
+hedge_model = NERModel(
+    'bert',
+    'jeniakim/hedgehog',
+    use_cuda=False,
+    labels=["C", "D", "E", "I", "N"],
+)
+tokenizer = AutoTokenizer.from_pretrained("finiteautomata/bertweet-base-sentiment-analysis")
+conviction_model = AutoModelForSequenceClassification.from_pretrained("finiteautomata/bertweet-base-sentiment-analysis")
+
 # estimator = CertaintyEstimator('sentence-level',cuda=True)
