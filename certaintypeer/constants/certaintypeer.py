@@ -43,7 +43,7 @@ retriever = HybridRetriever(
     vector_index_name="reviewEmbeddings",
     fulltext_index_name="reviewFullText",
     embedder=embeddings,
-    return_properties=["review", "certainty","conviction", "hedge", "id"],
+    return_properties=["review", "certainty","conviction", "hedge", "id","confidence","rating"],
 )
 
 llm = OpenAILLM(model_name="gpt-4o", model_params={"temperature": 0})

@@ -1,4 +1,4 @@
-from certaintypeer.endpoints import graph, vector, query
+from certaintypeer.endpoints import counterfactual, graph, vector, query
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -15,6 +15,7 @@ app.add_middleware(
 app.include_router(graph.router)
 app.include_router(vector.router)
 app.include_router(query.router)
+app.include_router(counterfactual.router)
 
 @app.get("/")
 def root():

@@ -1,4 +1,3 @@
-import re
 from fastapi import HTTPException
 from certaintypeer.constants.certaintypeer import driver
 
@@ -9,7 +8,7 @@ def add_vector_indexes():
                 """
                 CREATE VECTOR INDEX reviewEmbeddings IF NOT EXISTS
                 FOR (r:Review)
-                ON r.review
+                ON r.reviewEmbeddings
                 OPTIONS {indexConfig: {
                 `vector.similarity_function`: 'cosine'
                 }}
