@@ -34,7 +34,6 @@ tokenizer = AutoTokenizer.from_pretrained("finiteautomata/bertweet-base-sentimen
 conviction_model = AutoModelForSequenceClassification.from_pretrained("finiteautomata/bertweet-base-sentiment-analysis")
 
 # estimator = CertaintyEstimator('sentence-level',cuda=True)
-estimator = CertaintyEstimator('sentence-level')
 
 openai_llm = ChatOpenAI(temperature=0, model_name="gpt-4o")
 
